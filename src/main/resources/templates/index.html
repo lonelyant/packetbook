@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="webjars/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/index.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
+    <title>三口之家-记账本</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 微软雅黑;
+        }
+
+        .btn-block {
+            margin: 10% 5%;
+            width: 89%;
+        }
+
+        .little {
+            margin: 0% 5% 10% 5%;
+            width: 39%;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="panel panel-default form-inline" style="margin: 8% auto;width: 93%;">
+
+    <div class="panel-body form-inline" style="margin-bottom: 10%">
+        <div class="col-md-4" style="float: left;width: 32%;text-align: center">
+            <div class="panel-body"><span style="font-size: larger"><b>曦曦</b></span></div>
+            <div>
+                <button type="button" class="btn btn-default btn-info btn-group-lg">
+                    <span class="glyphicon glyphicon-usd"></span> <b>2300.6</b>
+                </button>
+            </div>
+        </div>
+
+
+        <div class="col-md-4" style="float: left;width: 32%;text-align: center">
+            <div class="panel-body"><span style="font-size: larger"><b>婷婷</b></span></div>
+            <div>
+                <button type="button" class="btn btn-default btn-info btn-group-lg">
+                    <span class="glyphicon glyphicon-usd"></span> <b>2300.1</b>
+                </button>
+            </div>
+        </div>
+
+
+        <div class="col-md-4" style="float: left;width: 32%;text-align: center">
+            <div class="panel-body"><span style="font-size: larger"><b>卫敏</b></span></div>
+            <div>
+                <button type="button" class="btn btn-default btn-info btn-group-lg">
+                    <span class="glyphicon glyphicon-usd"></span> <b>2300.1</b>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#bookkeeping">记&nbsp;&nbsp;&nbsp;账</button>
+    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#Repayment">还&nbsp;&nbsp;&nbsp;款</button>
+    <button type="button" class="btn btn-primary little">记&nbsp;&nbsp;录</button>
+    <button type="button" class="btn btn-primary little">统&nbsp;&nbsp;计</button>
+
+
+</div>
+<div class="jumbotron" style="text-align: center">
+    <h3 th:text="${session.nowtime}"></h3>
+    <h3>
+        <small>三口之家-记账本</small>
+    </h3>
+</div>
+
+
+<!-- ******************* 模态框开始 ******************* -->
+<!-- 记账模态框（Modal） -->
+<div class="modal fade" id="bookkeeping" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="bookkeeping_title">
+                    <span th:text="${session.bookkeeping_title}"></span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <!--*************** 内容开始 ****************-->
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="category" class="col-sm-2 control-label">类别</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="category"
+                                   placeholder="请输入类别">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="money" class="col-sm-2 control-label">金额</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="money"
+                                   placeholder="请输入消费金额">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fromWho" class="col-sm-2 control-label">支出人</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="fromWho"
+                                   placeholder="请输入人">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary">
+                    记录
+                </button>
+            </div>
+        </div>
+
+    </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+</div>
+
+<!-- 还款模态框（Modal） -->
+<div class="modal fade" id="Repayment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="Repayment_title">
+                    借了总是要还的！
+                </h4>
+            </div>
+            <div class="modal-body">
+                <!--*************** 内容开始 ****************-->
+
+                <!--*************** 内容结束 ****************-->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        确定还款
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</body>
+</html>
