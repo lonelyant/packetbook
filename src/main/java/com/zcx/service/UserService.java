@@ -9,6 +9,7 @@ import java.util.List;
  * @Date: 2018/07/31 14:50
  * @Description:
  */
-public interface TestService {
+public interface UserService {
     List<User> findAllUser();
+    void updateUser(User user);
 }

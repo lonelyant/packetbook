@@ -3,8 +3,11 @@
 <head>
     <script src="webjars/jquery/3.2.1/jquery.min.js"></script>
     <script src="/js/bootstrap.js"></script>
-    <script src="/js/index.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/toastr.js"></script>
+    <script src="/js/bootstrap-paginator.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/toastr.css"/>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
     <title>三口之家-记账本</title>
@@ -30,43 +33,25 @@
 </head>
 
 <body>
-
+<span class="hide" id="isSuccess" th:text="${session.isSuccess}"></span>
 <div class="panel panel-default form-inline" style="margin: 8% auto;width: 93%;">
 
+    <!-- rich显示区域 -->
     <div class="panel-body form-inline" style="margin-bottom: 10%">
-        <div class="col-md-4" style="float: left;width: 32%;text-align: center">
-            <div class="panel-body"><span style="font-size: larger"><b>曦曦</b></span></div>
-            <div>
-                <button type="button" class="btn btn-default btn-info btn-group-lg">
-                    <span class="glyphicon glyphicon-usd"></span> <b>2300.6</b>
-                </button>
-            </div>
-        </div>
-
-
-        <div class="col-md-4" style="float: left;width: 32%;text-align: center">
-            <div class="panel-body"><span style="font-size: larger"><b>婷婷</b></span></div>
-            <div>
-                <button type="button" class="btn btn-default btn-info btn-group-lg">
-                    <span class="glyphicon glyphicon-usd"></span> <b>2300.1</b>
-                </button>
-            </div>
-        </div>
-
-
-        <div class="col-md-4" style="float: left;width: 32%;text-align: center">
-            <div class="panel-body"><span style="font-size: larger"><b>卫敏</b></span></div>
-            <div>
-                <button type="button" class="btn btn-default btn-info btn-group-lg">
-                    <span class="glyphicon glyphicon-usd"></span> <b>2300.1</b>
+        <div class="col-md-4" style="float: left;width: 32%;text-align: center" th:each="user:${session.userList}">
+            <div class="panel-body"><span style="font-size: larger"><b th:text="${user.username}"></b></span></div>
+            <div style="border: 0">
+                <button type="button" class="btn btn-default btn-info btn-group-lg" style="background:#CD4F39;border: 0">
+                    <span class="glyphicon glyphicon-usd "></span> <b th:text="${user.rich}"></b>
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- 功能按钮区域 -->
     <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#bookkeeping">记&nbsp;&nbsp;&nbsp;账</button>
     <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#Repayment">还&nbsp;&nbsp;&nbsp;款</button>
-    <button type="button" class="btn btn-primary little">记&nbsp;&nbsp;录</button>
+    <button type="button" class="btn btn-primary little" data-toggle="modal" data-target="#record">记&nbsp;&nbsp;录</button>
     <button type="button" class="btn btn-primary little">统&nbsp;&nbsp;计</button>
 
 
@@ -80,7 +65,7 @@
 
 
 <!-- ******************* 模态框开始 ******************* -->
-<!-- 记账模态框（Modal） -->
+<!-- 记账模态框（Modal）开始 -->
 <div class="modal fade" id="bookkeeping" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -92,46 +77,101 @@
                     <span th:text="${session.bookkeeping_title}"></span>
                 </h4>
             </div>
-            <div class="modal-body">
-                <!--*************** 内容开始 ****************-->
-                <form class="form-horizontal" role="form">
+            <form class="form-horizontal" role="form" action="/bookkeeping" id="bookkeeping_form" method="post">
+                <div class="modal-body">
+                    <!--*************** 内容开始 ****************-->
                     <div class="form-group">
-                        <label for="category" class="col-sm-2 control-label">类别</label>
+                        <label for="category" class="col-sm-2 control-label"><span
+                                class="glyphicon glyphicon-th"></span> 类　别</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="category"
-                                   placeholder="请输入类别">
+                            <select class="form-control" id="category" name="category">
+                                <option th:each="category:${session.categoryList}" th:text="${category.category}"
+                                        th:value="${category.category_id}"></option>
+                            </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="money" class="col-sm-2 control-label">金额</label>
+                    <div class="form-group hide" id="category_info_div">
+                        <label for="category" class="col-sm-2 control-label"><span
+                                class="glyphicon glyphicon-gift"></span> 商品名</label>
                         <div class="col-sm-10">
-                            <input type="number" class="form-control" id="money"
+                            <input type="text" class="form-control" id="category_info" name="category_info"
+                                   placeholder="请输入所购买商品名称">
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="money_div">
+                        <label for="money" class="col-sm-2 control-label"><span class="glyphicon glyphicon-usd"></span>
+                            金　额</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="money" name="money"
                                    placeholder="请输入消费金额">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="fromWho" class="col-sm-2 control-label">支出人</label>
+                        <label for="fromWho" class="col-sm-2 control-label"><span
+                                class="glyphicon glyphicon-user"></span> 支出人</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="fromWho"
-                                   placeholder="请输入人">
+                            <select class="form-control" id="fromWho" name="fromWho">
+                                <option th:each="user:${session.userList}" th:text="${user.username}"
+                                        th:value="${user.user_id}"></option>
+                            </select>
                         </div>
                     </div>
-                </form>
+                    <!--*************** 内容结束 ****************-->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" id="bookkeeping_submit" data-toggle="modal">
+                        记录
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- 记账模态框（Modal）结束 -->
+<!-- 记账模态框确认框（Modal）开始 -->
+<div class="modal fade" id="bookkeeping_confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="bookkeeping_confirm_title">
+                    <span>提交确认</span>
+                </h4>
+            </div>
+            <div class="modal-body" id="bookkeeping_confirm_content">
+                <div style="font-size: larger">
+                    <span class="glyphicon glyphicon-th"></span><b> 类　别：</b><span id="bookkeeping_category"
+                                                                                  style="color: #4cae4c"></span><br>
+                    <hr width="75%">
+                    <span class="glyphicon glyphicon-usd"></span><b> 金　额：<span id="bookkeeping_money"
+                                                                               style="color: #761c19"></span></b><br>
+                    <hr width="75%">
+                    <span class="glyphicon glyphicon-user"></span><b> 支出人：</b><span id="bookkeeping_fromWho"
+                                                                                    style="color: #d58512"></span><br>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                 </button>
-                <button type="button" class="btn btn-primary">
-                    记录
+                <button type="button" class="btn btn-primary" id="bookkeeping_confirm_submit" data-toggle="modal"
+                        data-target="#bookkeeping">
+                    确定提交
                 </button>
             </div>
+            </form>
         </div>
-
-    </div><!-- /.modal-content -->
-</div><!-- /.modal -->
+    </div>
 </div>
+<!-- 记账模态框确认框（Modal）结束 -->
 
-<!-- 还款模态框（Modal） -->
+
+<!-- 还款模态框（Modal）开始 -->
 <div class="modal fade" id="Repayment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -157,5 +197,33 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal -->
     </div>
+</div>
+<!-- 还款模态框（Modal）结束 -->
+
+<!-- 记录模态框（Modal）开始 -->
+<div class="modal fade" id="record" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="record_title">
+                    <span>消费记录</span>
+                </h4>
+            </div>
+            <form class="form-horizontal" role="form" action="/bookkeeping" id="record_form" method="post">
+                <div class="modal-body">
+                    <!--*************** 内容开始 ****************-->
+                    <div id="pagelist">
+                    <!--*************** 内容结束 ****************-->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- 记录模态框（Modal）结束 -->
+
+<!-- ******************* 模态框结束 ******************* -->
 </body>
 </html>

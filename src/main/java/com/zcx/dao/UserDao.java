@@ -11,6 +11,7 @@ import java.util.List;
  * @Description:
  */
 @Repository("TestDao")
-public interface TestDao {
+public interface UserDao {
     List<User> findAllUser();
+    void updateUser(User user);
 }
