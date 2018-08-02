@@ -16,4 +16,8 @@
     <select id="findByCateId" parameterType="String" resultType="com.zcx.model.Expenses">
         SELECT * FROM expenses_record WHERE category=#{id}
     </select>
+
+    <select id="findByCateIdAndFromWho" parameterType="String" resultType="com.zcx.model.Expenses">
+        SELECT * FROM expenses_record WHERE category=#{id} AND fromWho=#{fromWho}
+    </select>
 </mapper>

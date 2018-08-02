@@ -57,9 +57,9 @@ public class CenterController {
         return "index";
     }
 
-
     /**
      * 记账
+     *
      * @param session
      * @param expenses
      * @return
@@ -81,6 +81,7 @@ public class CenterController {
 
     /**
      * 前端ajax请求此方法移除消息提示框状态
+     *
      * @param session
      * @return
      */
@@ -93,7 +94,8 @@ public class CenterController {
     }
 
     /**
-     * 记录列表显示
+     * 记录列表显示 TODO 逻辑处理部分移动到Service层中
+     *
      * @param page
      * @return
      */
@@ -121,25 +123,77 @@ public class CenterController {
         return map;
     }
 
+    /**
+     * 跳转统计页面
+     *
+     * @return
+     */
     @RequestMapping("/show")
-    public  String show(){
-
+    public String show() {
         return "show";
     }
 
+    /**
+     * 消费分类占比显示数据 TODO 逻辑处理部分移动到Service层中
+     *
+     * @return
+     */
     @RequestMapping("/show/expenses")
-    public @ResponseBody List<Map> show_expenses(){
-        Map<String,String> map = null;
+    public @ResponseBody
+    List<Map> show_expenses() {
+        Map<String, String> map = null;
         List<Map> result = new ArrayList<>();
         List<Category> categoryList = categoryService.findCategoryList();
         for (Category category : categoryList) {
             double money = expensesService.calcMoneyByCateId(category.getCategory_id());
             map = new HashMap<>();
-            map.put("name",category.getCategory());
+            map.put("name", category.getCategory());
             map.put("value", Double.toString(money));
             result.add(map);
         }
         System.out.println(result);
         return result;
+    }
+
+    /**
+     * 个人支出详情数据 TODO 逻辑处理部分移动到Service层中
+     * @return
+     */
+    @RequestMapping("/show/personDetail")
+    public @ResponseBody Map<String, Object> show_personDetail() {
+        Map<String,Object> map = new HashMap<>();
+        // 组建消费分类数据
+        List<Category> categoryList = categoryService.findCategoryList();
+        List<String> stringList1 = new ArrayList<>();
+        for (Category category : categoryList) {
+            stringList1.add(category.getCategory());
+        }
+        map.put("categoryList",stringList1);
+        // 组建用户列表数据
+        List<String> stringList2 = new ArrayList<>();
+        List<User> users = userService.findAllUser();
+        for (User user : users) {
+            stringList2.add(user.getUsername());
+        }
+        map.put("userList",stringList2);
+        // 组建主体数据
+        List<Map> mapList = new ArrayList<>();
+        Map<String,Object> dataMap = null;
+        for (Category category : categoryList) {
+            dataMap = new HashMap<>();
+            dataMap.put("name",category.getCategory());
+            dataMap.put("type","bar");
+            dataMap.put("stack","总量");
+            List<Double> list =  new ArrayList<>();
+            for (User user : users) {
+                double money = expensesService.calcMoneyByCateIdAndFromWho(category.getCategory_id(), user.getUser_id());
+                list.add(money);
+            }
+            dataMap.put("data",list);
+            mapList.add(dataMap);
+        }
+        map.put("data",mapList);
+        System.out.println(map);
+        return map;
     }
 }

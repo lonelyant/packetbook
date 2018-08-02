@@ -17,4 +17,5 @@ public interface ExpensesMapper {
     List<Expenses> findByPage(int begin);
     int getTotal();
     List<Expenses> findByCateId(@Param("id") String id);
+    List<Expenses> findByCateIdAndFromWho(@Param("id") String id,@Param("fromWho") String fromWho);
 }

@@ -83,7 +83,7 @@ $(document).ready(function () {
     // rich值大于0，设为绿色背景
     $(".btn.btn-default.btn-info.btn-group-lg").each(function () {
         var rich = this.children[1].innerText;
-        if(rich > 0){
+        if(rich >= 0){
             $(this).css({background:"#66CD00",border: 0});
         }
     });

@@ -78,4 +78,19 @@ public class ExpensesServiceImpl implements ExpensesService {
         }
         return total;
     }
+
+    @Override
+    public List<Expenses> findByCateIdAndFromWho(String id, String fromWho) {
+        return expensesMapper.findByCateIdAndFromWho(id, fromWho);
+    }
+
+    @Override
+    public double calcMoneyByCateIdAndFromWho(String id, String fromWho) {
+        List<Expenses> expensesList = findByCateIdAndFromWho(id, fromWho);
+        double total = 0.0;
+        for (Expenses expenses : expensesList) {
+            total += expenses.getMoney();
+        }
+        return total;
+    }
 }

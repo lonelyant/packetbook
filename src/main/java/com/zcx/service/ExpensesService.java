@@ -15,4 +15,6 @@ public interface ExpensesService {
     int getTotal();
     List<Expenses> findByCateId(String id);
     double calcMoneyByCateId(String id);
+    List<Expenses> findByCateIdAndFromWho(String id,String fromWho);
+    double calcMoneyByCateIdAndFromWho(String id,String fromWho);
 }
