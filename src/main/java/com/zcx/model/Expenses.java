@@ -1,5 +1,7 @@
 package com.zcx.model;
 
+import java.util.Date;
+
 /**
  * @author: Ant
  * @Date: 2018/08/01 09:53
@@ -11,6 +13,7 @@ public class Expenses {
     private String category_info;
     private double money;
     private String fromWho;
+    private String createTime;
 
 
     public String getEr_id() {
@@ -53,6 +56,14 @@ public class Expenses {
         this.fromWho = fromWho;
     }
 
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
     @Override
     public String toString() {
         return "Expenses{" +
@@ -61,6 +72,7 @@ public class Expenses {
                 ", category_info='" + category_info + '\'' +
                 ", money=" + money +
                 ", fromWho='" + fromWho + '\'' +
+                ", createTime='" + createTime + '\'' +
                 '}';
     }
 }

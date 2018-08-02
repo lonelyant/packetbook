@@ -8,4 +8,8 @@
     <update id="updateUser" parameterType="com.zcx.model.User">
         UPDATE user set rich=#{rich} where user_id=#{user_id}
     </update>
+
+    <select id="findById" parameterType="String" resultType="com.zcx.model.User">
+        SELECT * FROM user WHERE user_id=#{id}
+    </select>
 </mapper>

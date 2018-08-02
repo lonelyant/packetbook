@@ -24,4 +24,9 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.findCategoryList();
     }
 
+    @Override
+    public Category findCateById(String id) {
+        return categoryMapper.findCateById(id);
+    }
+
 }

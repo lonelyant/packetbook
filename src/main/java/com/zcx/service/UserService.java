@@ -12,4 +12,5 @@ import java.util.List;
 public interface UserService {
     List<User> findAllUser();
     void updateUser(User user);
+    User findById(String id);
 }

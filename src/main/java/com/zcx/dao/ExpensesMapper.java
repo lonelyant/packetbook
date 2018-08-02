@@ -1,6 +1,7 @@
 package com.zcx.dao;
 
 import com.zcx.model.Expenses;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface ExpensesMapper {
     void addExpenses(Expenses expenses);
     List<Expenses> findByPage(int begin);
     int getTotal();
+    List<Expenses> findByCateId(@Param("id") String id);
 }

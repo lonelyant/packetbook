@@ -5,5 +5,10 @@
         SELECT * FROM category
     </select>
 
+    <select id="findCateById" parameterType="String" resultType="com.zcx.model.Category">
+        SELECT * FROM category WHERE category_id=#{id}
+    </select>
+
+
 
 </mapper>

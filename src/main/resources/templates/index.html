@@ -6,8 +6,10 @@
     <script src="/js/main.js"></script>
     <script src="/js/toastr.js"></script>
     <script src="/js/bootstrap-paginator.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.18/af-2.3.0/datatables.min.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/css/toastr.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.18/af-2.3.0/datatables.min.css"/>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
     <title>三口之家-记账本</title>
@@ -48,11 +50,18 @@
         </div>
     </div>
 
+
+    <script>
+        function show() {
+            window.location.href="/show";
+        }
+    </script>
+
     <!-- 功能按钮区域 -->
     <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#bookkeeping">记&nbsp;&nbsp;&nbsp;账</button>
     <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#Repayment">还&nbsp;&nbsp;&nbsp;款</button>
     <button type="button" class="btn btn-primary little" data-toggle="modal" data-target="#record">记&nbsp;&nbsp;录</button>
-    <button type="button" class="btn btn-primary little">统&nbsp;&nbsp;计</button>
+    <button type="button" class="btn btn-primary little" onclick='javascript:show()'>统&nbsp;&nbsp;计</button>
 
 
 </div>
@@ -209,13 +218,15 @@
                     &times;
                 </button>
                 <h4 class="modal-title" id="record_title">
-                    <span>消费记录</span>
+                    <span>消费记录</span><small>（仅显示最近100条记录）</small>
                 </h4>
             </div>
             <form class="form-horizontal" role="form" action="/bookkeeping" id="record_form" method="post">
-                <div class="modal-body">
+                <div class="modal-body row pre-scrollable">
                     <!--*************** 内容开始 ****************-->
-                    <div id="pagelist">
+                    <ul class="list-group">
+                        <li class="list-group-item" style="padding: 14px 15px" th:each="expenses:${session.expensesList}"><b style="color: #2aabd2" th:text="${expenses.fromWho}+' '"></b>在 <b style="color: green" th:text="(${expenses.category_info} == ''?${expenses.category}:${expenses.category}+' - '+${expenses.category_info})+' '"></b>上花了 <b style="color: #b92c28" th:text="${expenses.money}+' '"></b>元<small class="pull-right" style="padding-top: 2px" th:text="${expenses.createTime}"></small></li>
+                    </ul>
                     <!--*************** 内容结束 ****************-->
                 </div>
             </form>

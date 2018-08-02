@@ -63,4 +63,19 @@ public class ExpensesServiceImpl implements ExpensesService {
     public int getTotal() {
         return expensesMapper.getTotal();
     }
+
+    @Override
+    public List<Expenses> findByCateId(String id) {
+        return expensesMapper.findByCateId(id);
+    }
+
+    @Override
+    public double calcMoneyByCateId(String id) {
+        List<Expenses> expensesList = findByCateId(id);
+        double total = 0.0;
+        for (Expenses expenses : expensesList) {
+            total += expenses.getMoney();
+        }
+        return total;
+    }
 }

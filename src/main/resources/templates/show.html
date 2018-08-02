@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="webjars/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/js/echarts.common.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
+    <title>统计</title>
+</head>
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+<div id="chart1" style="width: 90%;height: 400px"></div>
+<hr width="90%">
+<div id="chart2" style="width: 90%;height: 450px"></div>
+</body>
+
+
+<script type="text/javascript">
+    var chart1 = echarts.init(document.getElementById('chart1'));
+    var chart2 = echarts.init(document.getElementById('chart2'));
+    // 初始 option
+    $.ajax({
+        type: "GET",
+        url: "/show/expenses",
+        dateType: "json",
+        success: function (data) {
+            chart1.setOption({
+                title: {
+                    text: '消费分类占比',
+                    left: 'center',
+                    top: 20,
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    data:['菜米油盐','水、电、煤','购物'],
+                    bottom: 10
+                },
+                series: [
+                    {
+                        type: 'pie',
+                        radius: '65%',
+                        center: ['50%', '50%'],
+                        selectedMode: 'single',
+                        name: '三口之家消费占比',
+                        data: data,
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            });
+        }
+    });
+    $.ajax({
+        type: "GET",
+        url: "/show/expenses",
+        dateType: "json",
+        success: function (data) {
+            chart2.setOption({
+                title: {
+                    text: '个人支出统计',
+                    left: 'center',
+                    top: 10,
+                },
+
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                legend: {
+                    data:['菜米油盐','水、电、煤','购物'],
+                    bottom: 15
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    containLabel: true
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['曦曦', '婷婷', '卫敏']
+                },
+                series: [
+                    {
+                        name: '菜米油盐',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        data: [320, 302, 301]
+                    },
+                    {
+                        name: '水、电、煤',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        data: [120, 132, 101]
+                    },
+                    {
+                        name: '购物',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        data: [220, 182, 191]
+                    }
+                ]
+
+            });
+        }
+    })
+</script>
+</html>

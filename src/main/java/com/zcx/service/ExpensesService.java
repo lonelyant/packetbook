@@ -13,4 +13,6 @@ public interface ExpensesService {
     boolean addExpenses(Expenses expenses);
     List<Expenses> findByPage(int page);
     int getTotal();
+    List<Expenses> findByCateId(String id);
+    double calcMoneyByCateId(String id);
 }

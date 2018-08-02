@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface CategoryService {
     List<Category> findCategoryList();
-
+    Category findCateById(String id);
 }
