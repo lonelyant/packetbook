@@ -16,7 +16,9 @@ $(document).ready(function () {
     };
     // 列表更改为 购物 时显示 商品名 输入框
     $("#category").change(function () {
-        if ($("#category  option:selected").text() == "购物"){
+        var selection = $("#category  option:selected").text();
+        alert(selection);
+        if (selection == "购物" || selection == "其它"){
             $("#category_info_div").removeClass("hide");
         }else{
             $("#category_info_div").addClass("hide");
@@ -69,7 +71,6 @@ $(document).ready(function () {
 
 
     var isSuccess = $("#isSuccess").text();
-    //alert("..."+isSuccess);
     if(isSuccess == "success"){
         toastr.success("成功！完美的又花了一笔钱");
         // 异步请求服务器删除session，避免刷新后再次显示提示信息
@@ -78,7 +79,6 @@ $(document).ready(function () {
         toastr.error("小傻瓜，添加失败啦，服务器可能被曦曦炸啦！");
         $.ajax({url:"/removeIsSuccess",async:false});
     }
-
 
     // rich值大于0，设为绿色背景
     $(".btn.btn-default.btn-info.btn-group-lg").each(function () {

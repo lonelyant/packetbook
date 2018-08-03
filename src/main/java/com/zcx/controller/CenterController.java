@@ -21,6 +21,7 @@ import java.util.*;
  * @author: Ant
  * @Date: 2018/07/31 14:02
  * @Description:
+ * TODO 服务器端数据合法验证
  */
 @Controller
 public class CenterController {
@@ -66,7 +67,6 @@ public class CenterController {
      */
     @RequestMapping(value = "/bookkeeping")
     public String bookkeeping(HttpSession session, Expenses expenses) {
-        boolean isFromMethod = true;
         String er_id = UUID.randomUUID().toString();
         expenses.setEr_id(er_id);
         boolean b = expensesService.addExpenses(expenses);
@@ -88,7 +88,6 @@ public class CenterController {
     @RequestMapping(value = "/removeIsSuccess")
     public @ResponseBody
     String removeIsSuccess(HttpSession session) {
-        //System.out.println("+++++++++");
         session.removeAttribute("isSuccess");
         return "";
     }
@@ -151,7 +150,6 @@ public class CenterController {
             map.put("value", Double.toString(money));
             result.add(map);
         }
-        System.out.println(result);
         return result;
     }
 
@@ -193,7 +191,6 @@ public class CenterController {
             mapList.add(dataMap);
         }
         map.put("data",mapList);
-        System.out.println(map);
         return map;
     }
 }

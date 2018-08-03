@@ -6,6 +6,7 @@ import com.zcx.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -26,6 +27,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User user) {
+        double rich = user.getRich();
+        DecimalFormat df = new DecimalFormat("######0.00");
+        String s = df.format(rich);
+        user.setRich(Double.parseDouble(s));
         userDao.updateUser(user);
     }
 

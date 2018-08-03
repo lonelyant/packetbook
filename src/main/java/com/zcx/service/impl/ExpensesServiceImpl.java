@@ -38,10 +38,10 @@ public class ExpensesServiceImpl implements ExpensesService {
             //System.out.println(total);
             for (User user : userList) {
                 if (user.getUser_id().equals(expenses.getFromWho())) {
-                    user.setRich(Math.round((user.getRich() + (expenses.getMoney() * (total - 1) / total)) * 100) * 0.01d);
+                    user.setRich(Math.round((user.getRich() + (expenses.getMoney() * (total - 1) / total)) * 100) * 0.01);
                     userService.updateUser(user);
                 } else {
-                    user.setRich(Math.round((user.getRich() - (expenses.getMoney() * 1 / total)) * 100) * 0.01d);
+                    user.setRich(Math.round((user.getRich() - (expenses.getMoney() * 1 / total)) * 100) * 0.01);
                     userService.updateUser(user);
                 }
             }
