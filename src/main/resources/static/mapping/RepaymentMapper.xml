@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zcx.dao.RepaymentMapper">
+    <insert id="addRepayment" parameterType="com.zcx.model.Repayment">
+        INSERT  INTO  repayment_record(rr_id, whoAreYou,returnToWho,RepaymentMoney) VALUES(#{rr_id},#{whoAreYou},#{returnToWho},#{repaymentMoney})
+    </insert>
+
+    <select id="findByPage" parameterType="Integer" resultType="com.zcx.model.Repayment">
+        SELECT * from repayment_record order by createTime desc limit #{begin},100
+    </select>
+</mapper>

@@ -2,9 +2,11 @@ package com.zcx.controller;
 
 import com.zcx.model.Category;
 import com.zcx.model.Expenses;
+import com.zcx.model.Repayment;
 import com.zcx.model.User;
 import com.zcx.service.CategoryService;
 import com.zcx.service.ExpensesService;
+import com.zcx.service.RepaymentService;
 import com.zcx.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +34,8 @@ public class CenterController {
     private CategoryService categoryService;
     @Autowired
     private ExpensesService expensesService;
+    @Autowired
+    private RepaymentService repaymentService;
 
 
     @RequestMapping(value = "/test")
@@ -54,7 +58,9 @@ public class CenterController {
         List<User> userList = userService.findAllUser();
         session.setAttribute("userList", userList);
         // 得到消费记录列表
-        selectUsers(null, session);
+        getExpensesList(null, session);
+        // 得到还款记录列表
+        getRepaymentList(null,session);
         return "index";
     }
 
@@ -79,6 +85,27 @@ public class CenterController {
         return "redirect:/";
     }
 
+
+    /**
+     * 还款
+     * @param session
+     * @param repayment
+     * @return
+     */
+    @RequestMapping(value = "/repayment")
+    public String repayment(HttpSession session, Repayment repayment){
+        String rr_id = UUID.randomUUID().toString();
+        //System.out.println(repayment);
+        repayment.setRr_id(rr_id);
+        boolean b = repaymentService.addRepayment(repayment);
+        if (b) {
+            session.setAttribute("isSuccess", "repayment_success");
+        } else {
+            session.setAttribute("isSuccess", "fail");
+        }
+        return "redirect:/";
+    }
+
     /**
      * 前端ajax请求此方法移除消息提示框状态
      *
@@ -93,14 +120,14 @@ public class CenterController {
     }
 
     /**
-     * 记录列表显示 TODO 逻辑处理部分移动到Service层中
+     * 消费记录列表显示，未做分页处理 TODO 逻辑处理部分移动到Service层中
      *
      * @param page
      * @return
      */
     @RequestMapping("/getExpensesList")
     public @ResponseBody
-    Map<String, Object> selectUsers(Integer page, HttpSession session) {
+    Map<String, Object> getExpensesList(Integer page, HttpSession session) {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         if (page == null) page = 1;//页面第一次加载，默认为首页
         List<Expenses> expensesList = expensesService.findByPage(page);
@@ -121,6 +148,36 @@ public class CenterController {
         map.put("total", total);
         return map;
     }
+
+    /**
+     * 还款记录列表显示，未做分页处理 TODO 逻辑处理部分移动到Service层中
+     *
+     * @param page
+     * @return
+     */
+    @RequestMapping("/getRepaymentList")
+    public @ResponseBody
+    Map<String, Object> getRepaymentList(Integer page, HttpSession session) {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        if (page == null) page = 1;//页面第一次加载，默认为首页
+        List<Repayment> repaymentList = repaymentService.findByPage(page);
+        for (Repayment repayment : repaymentList) {
+            repayment.setWhoAreYou(userService.findById(repayment.getWhoAreYou()).getUsername());
+            repayment.setReturnToWho(userService.findById(repayment.getReturnToWho()).getUsername());
+            try {
+                repayment.setCreateTime(format.format(format.parse(repayment.getCreateTime())));
+            } catch (ParseException e) {
+                repayment.setCreateTime("time parse error");
+            }
+        }
+        session.setAttribute("repaymentList", repaymentList);
+        Map<String, Object> map = new HashMap<String, Object>();
+        //System.out.println(exString);
+        map.put("repaymentList", repaymentList);
+        return map;
+    }
+
+
 
     /**
      * 跳转统计页面

@@ -9,7 +9,8 @@
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.18/af-2.3.0/datatables.min.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/css/toastr.css"/>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.18/af-2.3.0/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs/dt-1.10.18/af-2.3.0/datatables.min.css"/>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
     <title>三口之家-记账本</title>
@@ -30,6 +31,11 @@
             margin: 0% 5% 10% 5%;
             width: 39%;
         }
+
+        .littlepadding {
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
     </style>
 
 </head>
@@ -44,7 +50,8 @@
         <div class="col-md-4" style="float: left;width: 32%;text-align: center" th:each="user:${session.userList}">
             <div class="panel-body"><span style="font-size: larger"><b th:text="${user.username}"></b></span></div>
             <div style="border: 0">
-                <button type="button" class="btn btn-default btn-info btn-group-lg" style="background:#CD4F39;border: 0">
+                <button type="button" class="btn btn-default btn-info btn-group-lg"
+                        style="background:#CD4F39;border: 0">
                     <span class="glyphicon glyphicon-usd "></span> <b th:text="${user.rich}"></b>
                 </button>
             </div>
@@ -54,15 +61,21 @@
 
     <script>
         function show() {
-            window.location.href="/show";
+            window.location.href = "/show";
         }
     </script>
 
     <!-- 功能按钮区域 -->
-    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#bookkeeping">记&nbsp;&nbsp;&nbsp;账</button>
-    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#Repayment">还&nbsp;&nbsp;&nbsp;款</button>
-    <button type="button" class="btn btn-primary little" data-toggle="modal" data-target="#record">记&nbsp;&nbsp;录</button>
-    <button type="button" class="btn btn-primary little" onclick='javascript:show()'>统&nbsp;&nbsp;计</button>
+    <button type="button" class="btn btn-primary btn-lg btn-block littlepadding" data-toggle="modal"
+            data-target="#bookkeeping">记&nbsp;&nbsp;&nbsp;账
+    </button>
+    <button type="button" class="btn btn-primary btn-lg btn-block littlepadding" data-toggle="modal"
+            data-target="#Repayment">还&nbsp;&nbsp;&nbsp;款
+    </button>
+    <button type="button" class="btn btn-primary btn-lg btn-block littlepadding" onclick='javascript:show()'>统&nbsp;&nbsp;计</button>
+    <button type="button" class="btn btn-primary little" data-toggle="modal" data-target="#record" onclick="javascript:updaterecord()">消费记录</button>
+    <button type="button" class="btn btn-primary little" data-toggle="modal" data-target="#repayment_record">还款记录
+    </button>
 
 
 </div>
@@ -193,24 +206,88 @@
                     借了总是要还的！
                 </h4>
             </div>
-            <div class="modal-body">
-                <!--*************** 内容开始 ****************-->
-                    <h2>敬请期待...</h2>
-                <!--*************** 内容结束 ****************-->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
-                    </button>
-                    <button type="button" class="btn btn-primary">
-                        确定还款
-                    </button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal -->
-    </div>
+            <form class="form-horizontal" role="form" action="/repayment" id="Repayment_form" method="post">
+                <div class="modal-body">
+                    <!--*************** 内容开始 ****************-->
+                    <div class="form-group">
+                        <label for="whoAreYou" class="col-sm-2 control-label"><span
+                                class="glyphicon glyphicon-user"></span> 你是谁？</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="whoAreYou" name="whoAreYou">
+                                <option th:each="user:${session.userList}" th:text="${user.username}"
+                                        th:value="${user.user_id}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="returnToWho_div">
+                        <label for="returnToWho" class="col-sm-2 control-label"><span
+                                class="glyphicon glyphicon-user"></span> 还给谁？</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="returnToWho" name="returnToWho">
+                                <option th:each="user:${session.userList}" th:text="${user.username}"
+                                        th:value="${user.user_id}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="money_div_return">
+                        <label for="RepaymentMoney" class="col-sm-2 control-label"><span
+                                class="glyphicon glyphicon-usd"></span>
+                            金　额</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="RepaymentMoney" name="repaymentMoney"
+                                   placeholder="请输入还款金额">
+                        </div>
+                    </div>
+                    <!--*************** 内容结束 ****************-->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary" id="repayment_submit">
+                            确定还款
+                        </button>
+                    </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
 </div>
 <!-- 还款模态框（Modal）结束 -->
+<!-- 还款模态框确认框（Modal）开始 -->
+<div class="modal fade" id="repayment_confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="repayment_confirm_title">
+                    <span>提交确认</span>
+                </h4>
+            </div>
+            <div class="modal-body" id="repayment_confirm_content">
+                <div style="font-size: larger;text-align: center">
+                    <span id="repayment_whoAreYou" style="color: #4cae4c"></span> 还给 <span id="repayment_returnToWho"
+                                                                                           style="color: #d58512"></span><br>
+                    <b></b><span id="reapyment_money" style="color: #761c19;font-size: larger"></span></b> 元
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="repayment_confirm_submit" data-toggle="modal"
+                        data-target="#bookkeeping">
+                    确定提交
+                </button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- 还款模态框确认框（Modal）结束 -->
 
-<!-- 记录模态框（Modal）开始 -->
+
+<!-- 消费记录模态框（Modal）开始 -->
 <div class="modal fade" id="record" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -219,23 +296,61 @@
                     &times;
                 </button>
                 <h4 class="modal-title" id="record_title">
-                    <span>消费记录</span><small>（仅显示最近100条记录）</small>
+                    <span>消费记录</span>
+                    <small>（仅显示最近100条记录）</small>
                 </h4>
             </div>
-            <form class="form-horizontal" role="form" action="/bookkeeping" id="record_form" method="post">
-                <div class="modal-body row pre-scrollable">
-                    <!--*************** 内容开始 ****************-->
-                    <ul class="list-group">
-                        <li class="list-group-item" style="padding: 14px 15px" th:each="expenses:${session.expensesList}"><b style="color: #2aabd2" th:text="${expenses.fromWho}+' '"></b>在 <b style="color: green" th:text="(${expenses.category_info} == ''?${expenses.category}:${expenses.category}+' - '+${expenses.category_info})+' '"></b>上花了 <b style="color: #b92c28" th:text="${expenses.money}+' '"></b>元<small class="pull-right" style="padding-top: 2px" th:text="${expenses.createTime}"></small></li>
-                    </ul>
-                    <!--*************** 内容结束 ****************-->
-                </div>
-            </form>
+            <div class="modal-body row pre-scrollable">
+                <!--*************** 内容开始 ****************-->
+                <ul class="list-group">
+                    <li class="list-group-item" style="padding: 14px 15px"
+                        th:each="expenses:${session.expensesList}"><b style="color: #2aabd2"
+                                                                      th:text="${expenses.fromWho}+' '"></b>在 <b
+                            style="color: green"
+                            th:text="(${expenses.category_info} == ''?${expenses.category}:${expenses.category}+' - '+${expenses.category_info})+' '"></b>上花了
+                        <b style="color: #b92c28" th:text="${expenses.money}+' '"></b>元
+                        <small class="pull-right" style="padding-top: 2px" th:text="${expenses.createTime}"></small>
+                    </li>
+                </ul>
+                <!--*************** 内容结束 ****************-->
+            </div>
         </div>
     </div>
 </div>
-<!-- 记录模态框（Modal）结束 -->
+<!-- 消费记录模态框（Modal）结束 -->
 
+<!-- 还款记录模态框（Modal）开始 -->
+<div class="modal fade" id="repayment_record" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="repayment_record_title">
+                    <span>还款记录</span>
+                    <small>（仅显示最近100条记录）</small>
+                </h4>
+            </div>
+            <div class="modal-body row pre-scrollable">
+                <!--*************** 内容开始 ****************-->
+                <ul class="list-group">
+                    <li class="list-group-item" style="padding: 14px 15px"
+                        th:each="repayment:${session.repaymentList}">
+                        <b style="color: #2aabd2" th:text="${repayment.whoAreYou}+' '"></b>
+                        还给了 <b style="color: green" th:text="${repayment.returnToWho}+' '"></b>
+                        <b style="color: #b92c28" th:text="${repayment.repaymentMoney}+' '"></b>
+                        元
+                        <small class="pull-right" style="padding-top: 2px" th:text="${repayment.createTime}"></small>
+                    </li>
+                </ul>
+                <!--*************** 内容结束 ****************-->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 还款记录模态框（Modal）结束 -->
 <!-- ******************* 模态框结束 ******************* -->
 </body>
 </html>
